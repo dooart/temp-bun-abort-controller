@@ -42,10 +42,14 @@ async function run() {
 
 console.log("starting...");
 
+setInterval(() => {
+  console.log("tick");
+}, 1000);
+
 run()
-  .then(() => {
-    console.log("done");
-  })
   .catch((e) => {
     console.error("caught");
+  })
+  .then(() => {
+    console.log("done");
   });

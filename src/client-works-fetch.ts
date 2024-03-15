@@ -12,6 +12,19 @@ process.on("uncaughtException", (err, origin) => {
   console.error("Uncaught Exception:", err, "origin:", origin);
 });
 
+process.on("SIGINT", () => {
+  console.log("SIGINT received");
+  process.exit(0);
+});
+
+process.on("beforeExit", () => {
+  console.log("beforeExit received");
+});
+
+process.on("exit", () => {
+  console.log("exit received");
+});
+
 async function run() {
   const url = "http://localhost:9999/events";
 
@@ -35,6 +48,10 @@ async function run() {
 }
 
 console.log("starting...");
+
+setInterval(() => {
+  console.log("tick");
+}, 1000);
 
 run()
   .then(() => {
