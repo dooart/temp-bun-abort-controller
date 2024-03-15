@@ -55,9 +55,9 @@ setInterval(() => {
 }, 1000);
 
 run()
-  .then(() => {
-    console.log("done");
-  })
   .catch((e) => {
     console.error("caught");
+  })
+  .then(() => {
+    console.log("done");
   });

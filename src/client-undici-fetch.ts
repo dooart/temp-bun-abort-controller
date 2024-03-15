@@ -1,5 +1,4 @@
-const abortController = new AbortController();
-const { signal } = abortController;
+import { fetch } from 'undici';
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
@@ -23,25 +22,21 @@ process.on("exit", () => {
 });
 
 async function run() {
+  const abortController = new AbortController();
+  const { signal } = abortController;
   const url = "http://localhost:9999/events";
 
-  try {
-    const response = await fetch(url, { signal });
-    if (response.body === null) throw new Error("Failed to get the stream.");
+  const response = await fetch(url, { signal });
+  console.log("Connected to server");
 
-    const reader = response.body.getReader();
+  if (response.body === null) throw new Error("Failed to get the stream.");
 
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-
-      console.log(value);
-      abortController.abort();
-    }
-  } catch (err) {
-    console.error("Error establishing stream:", err);
-    throw err;
+  for await (const chunk of response.body) {
+    console.log(new TextDecoder().decode(chunk as Buffer));
+    abortController.abort();
   }
+
+  console.log("Stream ended.");
 }
 
 console.log("starting...");
