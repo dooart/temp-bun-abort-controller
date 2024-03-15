@@ -40,6 +40,7 @@ async function run() {
     }
   } catch (err) {
     console.error("Error establishing stream:", err);
+    throw err;
   }
 }
 
@@ -50,9 +51,10 @@ setInterval(() => {
 }, 1000);
 
 run()
+.catch((e) => {
+  console.error("caught");
+})
   .then(() => {
     console.log("done");
   })
-  .catch((e) => {
-    console.error("caught");
-  });
+  ;

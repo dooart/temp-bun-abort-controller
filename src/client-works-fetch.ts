@@ -36,14 +36,15 @@ async function run() {
 
     if (response.body === null) throw new Error("Failed to get the stream.");
 
-  for await (const chunk of response.body) {
-    console.log(new TextDecoder().decode(chunk as Buffer));
-    abortController.abort();
-  }
+    for await (const chunk of response.body) {
+      console.log(new TextDecoder().decode(chunk as Buffer));
+      abortController.abort();
+    }
 
-  console.log("Stream ended.");
+    console.log("Stream ended.");
   } catch (err) {
     console.error("Error establishing stream:", err);
+    throw err;
   }
 }
 
