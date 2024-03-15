@@ -1,0 +1,20 @@
+{
+  "ts-node": {
+    "compilerOptions": {
+      "module": "ESNext"
+    }
+  },
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "outDir": "./dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "types": ["node"],
+    "moduleResolution": "Node",
+  },
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["node_modules"]
+}
