@@ -1,17 +1,24 @@
-import { fetch as fetch2 } from 'undici';
-import { OpenAI } from 'openai'
+import fetch from "node-fetch"
+import { OpenAILanguageProgramProcessor } from 'socialagi'
 
 async function run() {
   const controller = new AbortController()
-  const client = new OpenAI({
+
+  console.log("tick", controller.signal.aborted)
+  
+  setInterval(() => {
+    console.log("tick", controller.signal.aborted)
+  }, 1000);
+  
+  const processor = new OpenAILanguageProgramProcessor({
     fetch: async (url: RequestInfo, init?: RequestInit): Promise<Response> => {
-      console.log("using custom fetch")
-      const response = await fetch2(url as any, init as any);
+      console.log("using node-fetch")
+      const response = await fetch(url as any, init as any);
       return response as any;
     },
-  });
-  
-  const resp = await client.chat.completions.create(
+  })
+
+  const resp = await processor.client.chat.completions.create(
     {
       model: "gpt-4-0125-preview",
       messages: [{
@@ -28,23 +35,22 @@ async function run() {
       signal: controller.signal,
     }
   )
-  
-  setTimeout(() => {
-    controller.abort()
-  }, 150)
-  
+
   for await (const res of resp) {
     try {
-      console.log(".")
+      console.log("abort")
+      controller.abort()
+    } catch (err) {
+      console.error('err: ', err)
+    }
+
+    try {
+      console.log("str: ", res)
     } catch (err) {
       console.error('err: ', err)
     }
   }
 }
-
-setInterval(() => {
-  console.log("tick");
-}, 1000);
 
 run().catch((e) => {
   console.error("caught:", e);
